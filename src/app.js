@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
 const axios = require('axios')
+const cors = require('cors')
 var convert = require('xml-js');
 var moment = require('moment')
 const low = require('lowdb')
@@ -11,7 +12,7 @@ const adapter = new FileAsync('db.json')
 
 var CronJob = require('cron').CronJob;
 
-
+app.use(cors())
 app.use(express.json())
 
 low(adapter).then(db => {
