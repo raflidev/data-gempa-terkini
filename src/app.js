@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const PORT = 3000 || process.env.PORT
+const PORT = process.env.PORT || 3000
 const axios = require('axios')
 var convert = require('xml-js');
 var moment = require('moment')
