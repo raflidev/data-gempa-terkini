@@ -15,7 +15,7 @@ var CronJob = require('cron').CronJob;
 app.use(express.json())
 
 low(adapter).then(db => {
-    var job = new CronJob('*/30 * * * *', async function() {
+    var job = new CronJob('* * * * * *', async function() {
 
         const data = await axios.get("https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml")
         const result = convert.xml2json(data.data, {compact: true, spaces: 4});
