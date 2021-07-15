@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3000
 const axios = require('axios')
 const cors = require('cors')
 var convert = require('xml-js');
-var moment = require('moment')
+// var moment = require('moment')
 require("dotenv/config")
 
 var CronJob = require('cron').CronJob;
@@ -29,7 +29,7 @@ const cekData = await axios.get("https://data-gempa-terkini.herokuapp.com/")
 if (cekData.data.map(x => x.detail.wilayah).indexOf(info.Infogempa.gempa.Wilayah._text) === -1) {
     try{
         const dataGempa = new Gempa({
-            "ambil_data":moment().format('MMMM Do YYYY, h:mm:ss a'),
+            "ambil_data":new ISODate(),
             "jam":info.Infogempa.gempa.Tanggal._text + " " + info.Infogempa.gempa.Jam._text,
             "detail": {
                 wilayah:info.Infogempa.gempa.Wilayah._text,
@@ -48,7 +48,7 @@ if (cekData.data.map(x => x.detail.wilayah).indexOf(info.Infogempa.gempa.Wilayah
 job.start();
 
 app.get("/", async (req,res) => {
-    res.send(await Gempa.find())
+    res.send(await Gempa.find().sort({ambil_data: -1}))
 })
 
 app.listen(PORT, () =>{
