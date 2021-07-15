@@ -25,21 +25,24 @@ var job = new CronJob('*/10 * * * *', async function() {
 const data = await axios.get("https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml")
 const result = convert.xml2json(data.data, {compact: true, spaces: 4});
 const info = JSON.parse(result)
-try{
-    const dataGempa = new Gempa({
-        "ambil_data":moment().format('MMMM Do YYYY, h:mm:ss a'),
-        "jam":info.Infogempa.gempa.Tanggal._text + " " + info.Infogempa.gempa.Jam._text,
-        "detail": {
-            wilayah:info.Infogempa.gempa.Wilayah._text,
-            koordinat:info.Infogempa.gempa.point.coordinates._text,
-            bujur:info.Infogempa.gempa.Bujur._text,
-            lintang:info.Infogempa.gempa.Lintang._text,
-            map:info.Infogempa.gempa.Shakemap._text
-        }
-    })
-    dataGempa.save()
-}catch(err) {
-    console.log({message: err});
+const cekData = await axios.get("https://data-gempa-terkini.herokuapp.com/")
+if (cekData.data.map(x => x.detail.wilayah).indexOf(info.Infogempa.gempa.Wilayah._text) === -1) {
+    try{
+        const dataGempa = new Gempa({
+            "ambil_data":moment().format('MMMM Do YYYY, h:mm:ss a'),
+            "jam":info.Infogempa.gempa.Tanggal._text + " " + info.Infogempa.gempa.Jam._text,
+            "detail": {
+                wilayah:info.Infogempa.gempa.Wilayah._text,
+                koordinat:info.Infogempa.gempa.point.coordinates._text,
+                bujur:info.Infogempa.gempa.Bujur._text,
+                lintang:info.Infogempa.gempa.Lintang._text,
+                map:info.Infogempa.gempa.Shakemap._text
+            }
+        })
+        dataGempa.save()
+    }catch(err) {
+        console.log({message: err});
+    }
 }
 }, null, true, 'America/Los_Angeles');
 job.start();
