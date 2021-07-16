@@ -27,9 +27,10 @@ const result = convert.xml2json(data.data, {compact: true, spaces: 4});
 const info = JSON.parse(result)
 const cekData = await axios.get("https://data-gempa-terkini.herokuapp.com/")
 if (cekData.data.map(x => x.detail.wilayah).indexOf(info.Infogempa.gempa.Wilayah._text) === -1) {
+    console.log(info.Infogempa.gempa.Wilayah._text);
     try{
         const dataGempa = new Gempa({
-            "ambil_data":new ISODate(),
+            "ambil_data":new Date(),
             "jam":info.Infogempa.gempa.Tanggal._text + " " + info.Infogempa.gempa.Jam._text,
             "detail": {
                 wilayah:info.Infogempa.gempa.Wilayah._text,
