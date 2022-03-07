@@ -52,6 +52,13 @@ app.get("/", async (req,res) => {
     res.send(await Gempa.find().sort({ambil_data: -1}))
 })
 
+app.get("/autogempa", async(req,res) => {
+  const data = await axios.get("https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml")
+  const result = convert.xml2json(data.data, {compact: true, spaces: 4});
+  const info = JSON.parse(result)
+  res.json(info)
+})
+
 app.listen(PORT, () =>{
     console.log(`Server berjalan di http://localhost:${PORT}`);
 })
